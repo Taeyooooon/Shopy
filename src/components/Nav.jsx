@@ -10,7 +10,7 @@ export default function Nav() {
 
   return (
     <header className='flex justify-between border-b border-gray-300 p-2'>
-      <Link className='flex items-center text-4xl text-brand'>
+      <Link className='flex items-center text-4xl text-brand' to={'/'}>
         <FiShoppingBag />
         <h1>Shopy</h1>
       </Link>
