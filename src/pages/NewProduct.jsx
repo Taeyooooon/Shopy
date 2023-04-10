@@ -2,23 +2,35 @@ import { useState } from 'react';
 import Button from '../components/ui/Button';
 import { uploadImage } from '../api/uploader';
 import { addNewProduct } from '../api/firebase';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function NewProduct() {
   const [product, setProduct] = useState({});
   const [file, setFile] = useState();
   const [isUploading, setIsUploading] = useState(false);
   const [success, setSuccess] = useState();
+  const queryClient = useQueryClient();
+  const addProduct = useMutation(
+    ({ product, url }) => addNewProduct(product, url),
+    {
+      onSuccess: () => queryClient.invalidateQueries(['products']),
+    }
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsUploading(true);
     uploadImage(file)
       .then((url) => {
-        console.log(url);
-        addNewProduct(product, url).then(() => {
-          setSuccess('성공적으로 제품이 등록되었습니다.');
-          setTimeout(() => setSuccess(null), 4000);
-        });
+        addProduct.mutate(
+          { product, url },
+          {
+            onSuccess: () => {
+              setSuccess('성공적으로 제품이 등록되었습니다.');
+              setTimeout(() => setSuccess(null), 4000);
+            },
+          }
+        );
       })
       .finally(() => setIsUploading(false));
   };
@@ -35,7 +47,13 @@ export default function NewProduct() {
     <section className='w-full text-center'>
       <h2 className='text-2xl font-bold my-4'>새로운 제품 등록</h2>
       {success && <p className='my-2'>✅ {success}</p>}
-      {file && <img className='w-96 mx-auto mb-2' src={URL.createObjectURL(file)} alt='local file' />}
+      {file && (
+        <img
+          className='w-96 mx-auto mb-2'
+          src={URL.createObjectURL(file)}
+          alt='local file'
+        />
+      )}
       <form className='flex flex-col px-12' onSubmit={handleSubmit}>
         <input
           type='file'
