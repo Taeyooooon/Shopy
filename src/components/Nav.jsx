@@ -8,7 +8,7 @@ import CartStatus from './CartStatus';
 
 export default function Nav() {
   const { user, login, logout } = useAuthContext();
-  console.log('user : ', user);
+
   return (
     <header className='flex justify-between border-b border-gray-300 p-2'>
       <Link className='flex items-center text-4xl text-brand' to={'/'}>
