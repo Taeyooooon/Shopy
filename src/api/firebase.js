@@ -19,7 +19,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
-const database = getDatabase();
+const database = getDatabase(app);
 provider.setCustomParameters({
   prompt: 'select_account',
 });
